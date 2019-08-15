@@ -1,65 +1,72 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, ScrollView, Image, TouchableWithoutFeedback, Animated, Dimensions, SafeAreaView } from 'react-native'
+import { Text, View, FlatList, ImageBackground, Image, TouchableWithoutFeedback, Animated, } from 'react-native'
+import { datas } from '../data';
+import Header from '../components/Header';
+import { styles } from '../style';
 
-let SCREEN_WIDTH = Dimensions.get('window').width
-let SCREEN_HEIGHT = Dimensions.get('window').height
-
-const images = [
-    {id: 1, src: require('../assets/image_1.jpg')},
-    {id: 2, src: require('../assets/image_2.jpg')},
-    {id: 3, src: require('../assets/image_3.jpg')},
-    {id: 4, src: require('../assets/image_4.jpg')},
-]
 
 export class Home extends Component {
-
-    componentWillMount() {
-        this.allImages = {}
-    }
     
-    openImage = (index) => {
-            
+    static navigationOptions = {
+        header: (
+            <Header />  
+        )
     }
-
-    render() {
+    renderArticles = () => {
         return (
-            <SafeAreaView style={{ flex: 1 }}>
-                <ScrollView style={{ flex: 1 }}>
-                    {images.map((image, index) => {
-                        return (
-                            <TouchableWithoutFeedback key={image.id} onPress={()=>this.openImage(index)}>
-                                <Animated.View style={styles.animatedImage}>
-                                <Image style={styles.image} ref={(image) => (this.allImages[index] = image)} source={image.src} />
-                                </Animated.View>
-                            </TouchableWithoutFeedback>
-                            
-                        )
-                    })}
-                </ScrollView>
-            </SafeAreaView>
+            <View style={[styles.flex, styles.column, styles.articleStaffs]}>
+                <FlatList 
+                    horizontal
+                    pagingEnabled
+                    scrollEnabled
+                    showsHorizontalScrollIndicator={false}
+                    scrollEventThrottle={16}
+                    snapToAlignment="center"
+                    data={this.props.articles}
+                    style={styles.flatlist}
+                    keyExtractor={(item, index) => `${item.id}`}
+                    renderItem={({ item }) => this.renderArticle(item)}
+                />
+            </View>
+        );
+    }
+    renderArticle = (item) => {  
+        return(  
+            <ImageBackground 
+                style={[ styles.flex, styles.articleStaff]}
+                imageStyle={{borderRadius: 12}}
+                source={{ uri: item.preview }} 
+                >
+                
+                <View style={[styles.column, styles.articleInfo, styles.shadow]}>
+                    <Text style={{fontWeight: '500', fontSize: 18, paddingBottom: 8}}>{item.title}</Text>
+                    <Text style={{color:'grey', fontSize:12, }}>{item.description}</Text>
+                </View>
+            </ImageBackground>
+        )
+    }
+    renderRecommended = () => {
+        return (
+            <View style={[styles.flex, styles.column, styles.recommended, {zIndex:1}]}>
+                <Text>Recommended</Text>
+            </View>
+            
+        );
+    }
+    render() {
+        console.log(this.renderArticle);
+        
+        return (
+            <View style={[styles.article, styles.flex]}>
+                {this.renderArticles()}
+                {this.renderRecommended()}
+            </View>
             
         )
     }
 } 
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    animatedImage: {
-        height: SCREEN_HEIGHT - 150,
-        width: SCREEN_WIDTH,
-        padding: 15
-    },
-    image: {
-        flex: 1,
-        height: null,
-        width: null,
-        resizeMode:'cover',
-        borderRadius: 20
-    }
-})
+Home.defaultProps = {
+    articles: datas
+}
 export default Home
