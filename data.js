@@ -28,7 +28,7 @@ export const datas = [
         title: 'Internet Marketing',
         description: 'Internet marketing klijentima omogućava da za manji uložen novac pošalju poruku velikom broju ljudi i privučete njihovu pažnju.',
         preview:'http://grupa.co.rs/wp-content/uploads/2018/11/sastana.jpg',
-        imagse: [
+        images: [
             'http://grupa.co.rs/wp-content/uploads/2018/11/sastana.jpg',
             'http://grupa.co.rs/wp-content/uploads/2018/11/sastana.jpg',
             'http://grupa.co.rs/wp-content/uploads/2018/11/sastana.jpg',

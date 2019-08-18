@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import { Text, View, FlatList, ImageBackground, Image, TouchableWithoutFeedback, Animated, } from 'react-native'
+import { Text, View, FlatList, ImageBackground,Dimensions,ScrollView, Image, TouchableOpacity, Animated, } from 'react-native'
 import { datas } from '../data';
 import Header from '../components/Header';
 import { styles } from '../style';
 
+
+const { width, height } = Dimensions.get('screen');
 
 export class Home extends Component {
     
@@ -31,36 +33,80 @@ export class Home extends Component {
         );
     }
     renderArticle = (item) => {  
-        return(  
-            <ImageBackground 
-                style={[ styles.flex, styles.articleStaff]}
-                imageStyle={{borderRadius: 12}}
-                source={{ uri: item.preview }} 
-                >
-                
-                <View style={[styles.column, styles.articleInfo, styles.shadow]}>
-                    <Text style={{fontWeight: '500', fontSize: 18, paddingBottom: 8}}>{item.title}</Text>
-                    <Text style={{color:'grey', fontSize:12, }}>{item.description}</Text>
-                </View>
-            </ImageBackground>
+        return(
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('Article', {article: item})}>
+                <ImageBackground 
+                    style={[ styles.flex, styles.articleStaff]}
+                    imageStyle={{borderRadius: 12}}
+                    source={{ uri: item.preview }} 
+                    >
+                    
+                    <View style={[styles.column, styles.articleInfo, styles.shadow]}>
+                        <Text style={{fontWeight: '500', fontSize: 18, paddingBottom: 8}}>{item.title}</Text>
+                        <Text style={{color:'grey', fontSize:12, }}>{item.description}</Text>
+                    </View>
+                </ImageBackground>
+            </TouchableOpacity>  
+            
         )
     }
     renderRecommended = () => {
         return (
-            <View style={[styles.flex, styles.column, styles.recommended, {zIndex:1}]}>
-                <Text>Recommended</Text>
+            <View style={[styles.flex, styles.column, styles.recommended]}>
+                <View style={[styles.row, styles.recommendedList]}>
+                    <Text style={{fontSize: 18}}>Recommended</Text>
+                    <Text style={{color: 'grey'}}>More</Text>
+                </View>
+                <View style={[styles.column, ]}>
+                    <FlatList 
+                        horizontal
+                        pagingEnabled
+                        scrollEnabled
+                        showsHorizontalScrollIndicator={false}
+                        scrollEventThrottle={16}
+                        snapToAlignment="center"
+                        data={this.props.articles}
+                        style={[styles.shadow, {overflow: 'visible'}]}
+                        keyExtractor={(item, index) => `${item.id}`}
+                        renderItem={({ item }) => this.renderRecommendation(item)}
+                    />
+                </View>
+            </View>
+            
+        );
+    }
+
+    renderRecommendation = (item, index) => {
+        const { articles } = this.props;
+        const isLastItem = index === articles.length - 1;
+        return (
+            <View style={[
+                 styles.column, styles.recommendation, styles.shadow, 
+                index === 0 ? { marginLeft: 36 } : null,
+                isLastItem ? { marginRight: 18 } : null,
+              ]}>
+                <View style={[styles.flex, styles.recommendationHeader]}>
+                    <Image style={[ styles.flex,styles.recommendedImage ]} source={{ uri: item.preview }} />
+                    <View style={[styles.flex, styles.row, styles.recommendationOptions]}>
+
+                    </View>
+                </View>
+                
+                <View style={[styles.flex, styles.column, styles.shadow, {justifyContent: 'space-evenly',  paddingTop:18 }]}>
+                    <Text>{item.title}</Text>
+
+                </View>
             </View>
             
         );
     }
     render() {
-        console.log(this.renderArticle);
         
         return (
-            <View style={[styles.article, styles.flex]}>
+            <ScrollView style={[styles.article, styles.flex]}>
                 {this.renderArticles()}
                 {this.renderRecommended()}
-            </View>
+            </ScrollView>
             
         )
     }
