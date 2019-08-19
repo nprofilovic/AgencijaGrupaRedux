@@ -49,7 +49,7 @@ export class Home extends Component {
     renderArticle = (item) => {  
         return(
             
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('Article', {article: item})}>
+          
                 <ImageBackground 
                     style={[ styles.flex, styles.articleStaff]}
                     imageStyle={{borderRadius: 12}}
@@ -61,7 +61,7 @@ export class Home extends Component {
                         <Text style={{color:'grey', fontSize:12, }}>{item._nectar_slider_caption}</Text>
                     </View>
                 </ImageBackground>
-            </TouchableOpacity>  
+              
             
         )
     }
@@ -95,24 +95,25 @@ export class Home extends Component {
         const { articles } = this.props;
         const isLastItem = index === articles.length - 1;
         return (
-            <View style={[
-                 styles.column, styles.recommendation, styles.shadow, 
-                index === 0 ? { marginLeft: 36 } : null,
-                isLastItem ? { marginRight: 18 } : null,
-              ]}>
-                <View style={[styles.flex, styles.recommendationHeader]}>
-                    <Image style={[ styles.flex,styles.recommendedImage ]} source={{ uri: item.preview }} />
-                    <View style={[styles.flex, styles.row, styles.recommendationOptions]}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('Article', {article: item})}>
+                <View style={[
+                    styles.column, styles.recommendation, styles.shadow, 
+                    index === 0 ? { marginLeft: 36 } : null,
+                    isLastItem ? { marginRight: 18 } : null,
+                ]}>
+                    <View style={[styles.flex, styles.recommendationHeader]}>
+                        <Image style={[ styles.flex,styles.recommendedImage ]} source={{ uri: item.preview }} />
+                        <View style={[styles.flex, styles.row, styles.recommendationOptions]}>
+
+                        </View>
+                    </View>
+                    
+                    <View style={[styles.flex, styles.column, styles.shadow, {justifyContent: 'space-evenly',  paddingTop:18 }]}>
+                        <Text>{item.title}</Text>
 
                     </View>
                 </View>
-                
-                <View style={[styles.flex, styles.column, styles.shadow, {justifyContent: 'space-evenly',  paddingTop:18 }]}>
-                    <Text>{item.title}</Text>
-
-                </View>
-            </View>
-            
+            </TouchableOpacity>
         );
     }
     render() {
