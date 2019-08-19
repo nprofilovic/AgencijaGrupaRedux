@@ -27,6 +27,8 @@ export class Article extends Component {
     render() {
         const { navigation } = this.props;
         const article = navigation.getParam('article');
+        console.log(article);
+        
         return (
             <View style={stylesArtical.flex}>
                 <View style={stylesArtical.flex}>
@@ -40,11 +42,9 @@ export class Article extends Component {
                         snapToAlignment="center"
                         onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.scrollX } } }])}
                     >
-                        {
-                            article.images.map((img, index) => 
+                         
                                 <Image
-                                key={`${index}-${img}`}
-                                source={{ uri: img }}
+                                source={{ uri: article.featured_image_src }}
                                 resizeMode='cover'
                                 style={{ width, height: width }}
                                 />
@@ -55,14 +55,14 @@ export class Article extends Component {
                 </View>
                 <View style={[stylesArtical.flex, stylesArtical.content]}>
                     <View style={[stylesArtical.flex, stylesArtical.contentHeader]}>
-                        <Text style={stylesArtical.title}>{article.title}</Text>
-                    
-                    <TouchableOpacity>
+                        <Text style={stylesArtical.title}>{article.title.rendered}</Text>
+            
                         <Text style={stylesArtical.description}>
-                            {article.description.split('').slice(0, 180)}...
+                            {article.excerpt.rendered.split('').slice(0, 180)}...
+                            
                             <Text style={{color: '#007BFA'}}> Read more</Text>
                         </Text>
-                    </TouchableOpacity>
+                   
                     </View>
                 </View>
             </View>

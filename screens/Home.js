@@ -3,7 +3,7 @@ import { Text, View, FlatList, ImageBackground,Dimensions,ScrollView, Image, Tou
 import { datas } from '../data';
 import Header from '../components/Header';
 import { styles } from '../style';
-
+import axios from 'axios';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -14,6 +14,20 @@ export class Home extends Component {
             <Header />  
         )
     }
+
+    state = {
+        datas: []
+    }
+    componentDidMount() {
+        this.fetchData();
+    }
+    fetchData = () => {
+        axios.get(`http://grupa.co.rs/wp-json/wp/v2/nectar_slider`)
+        .then(res => {
+            this.setState({datas: res.data});        
+        })
+    }
+    
     renderArticles = () => {
         return (
             <View style={[styles.flex, styles.column, styles.articleStaffs]}>
@@ -24,7 +38,7 @@ export class Home extends Component {
                     showsHorizontalScrollIndicator={false}
                     scrollEventThrottle={16}
                     snapToAlignment="center"
-                    data={this.props.articles}
+                    data={this.state.datas}
                     style={styles.flatlist}
                     keyExtractor={(item, index) => `${item.id}`}
                     renderItem={({ item }) => this.renderArticle(item)}
@@ -34,16 +48,17 @@ export class Home extends Component {
     }
     renderArticle = (item) => {  
         return(
+            
             <TouchableOpacity onPress={() => this.props.navigation.navigate('Article', {article: item})}>
                 <ImageBackground 
                     style={[ styles.flex, styles.articleStaff]}
                     imageStyle={{borderRadius: 12}}
-                    source={{ uri: item.preview }} 
+                    source={{ uri: item._nectar_slider_image }} 
                     >
                     
                     <View style={[styles.column, styles.articleInfo, styles.shadow]}>
-                        <Text style={{fontWeight: '500', fontSize: 18, paddingBottom: 8}}>{item.title}</Text>
-                        <Text style={{color:'grey', fontSize:12, }}>{item.description}</Text>
+                        <Text style={{fontWeight: '500', fontSize: 18, paddingBottom: 8}}>{item._nectar_slider_heading}</Text>
+                        <Text style={{color:'grey', fontSize:12, }}>{item._nectar_slider_caption}</Text>
                     </View>
                 </ImageBackground>
             </TouchableOpacity>  
