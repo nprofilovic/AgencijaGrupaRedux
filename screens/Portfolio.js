@@ -4,10 +4,11 @@ import { stylesArtical } from '../style';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ScrollView } from 'react-native-gesture-handler';
+import HTML from 'react-native-render-html';
 
 const { width, height } = Dimensions.get('window');
 
-export class Article extends Component {
+export class Portfolio extends Component {
     scrollX = new Animated.Value(0);
     static navigationOptions = ({ navigation }) => {
         return {
@@ -26,10 +27,12 @@ export class Article extends Component {
     }
     render() {
         const { navigation } = this.props;
-        const article = navigation.getParam('article');
-        console.log(article);
+        const portfolio = navigation.getParam('portfolio');
+        console.log(portfolio);
         
         return (
+            
+                 
             <View style={stylesArtical.flex}>
                 <View style={stylesArtical.flex}>
                     <ScrollView
@@ -43,30 +46,25 @@ export class Article extends Component {
                         onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.scrollX } } }])}
                     >
                          
-                                <Image
-                                source={{ uri: article.featured_image_src }}
+                         <Image
+                                source={{ uri: portfolio.media_image_src }}
                                 resizeMode='cover'
                                 style={{ width, height: width }}
                                 />
-                       
-
                     </ScrollView>
                 </View>
                 <View style={[stylesArtical.flex, stylesArtical.content]}>
                     <View style={[stylesArtical.flex, stylesArtical.contentHeader]}>
-                        <Text style={stylesArtical.title}>{article.title.rendered}</Text>
+                        <Text style={stylesArtical.title}>{portfolio.title.rendered}</Text>
             
-                        <Text style={stylesArtical.description}>
-                            {article.excerpt.rendered.split('').slice(0, 180)}...
-                            
-                            <Text style={{color: '#007BFA'}}> Read more</Text>
-                        </Text>
+                        <HTML html={portfolio._nectar_portfolio_extra_content} imagesMaxWidth={Dimensions.get('window').width} />
                    
                     </View>
                 </View>
             </View>
+            
         )
     }
 }
 
-export default Article
+export default Portfolio

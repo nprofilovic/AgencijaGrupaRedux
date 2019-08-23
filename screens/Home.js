@@ -16,15 +16,23 @@ export class Home extends Component {
     }
 
     state = {
-        datas: []
+        datas: [],
+        portfolio: []
     }
     componentDidMount() {
         this.fetchData();
+        this.fetchPortfolio();
     }
     fetchData = () => {
         axios.get(`http://grupa.co.rs/wp-json/wp/v2/nectar_slider`)
         .then(res => {
             this.setState({datas: res.data});        
+        })
+    }
+    fetchPortfolio = () => {
+        axios.get(`http://grupa.co.rs/wp-json/wp/v2/portfolio`)
+        .then(res => {
+            this.setState({portfolio: res.data});
         })
     }
     
@@ -80,7 +88,7 @@ export class Home extends Component {
                         showsHorizontalScrollIndicator={false}
                         scrollEventThrottle={16}
                         snapToAlignment="center"
-                        data={this.props.articles}
+                        data={this.state.portfolio}
                         style={[styles.shadow, {overflow: 'visible'}]}
                         keyExtractor={(item, index) => `${item.id}`}
                         renderItem={({ item }) => this.renderRecommendation(item)}
@@ -92,24 +100,24 @@ export class Home extends Component {
     }
 
     renderRecommendation = (item, index) => {
-        const { articles } = this.props;
-        const isLastItem = index === articles.length - 1;
+        const { portfolio } = this.state;
+        const isLastItem = index === portfolio.length - 1;
         return (
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('Article', {article: item})}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('Portfolio', {portfolio: item})}>
                 <View style={[
                     styles.column, styles.recommendation, styles.shadow, 
                     index === 0 ? { marginLeft: 36 } : null,
                     isLastItem ? { marginRight: 18 } : null,
                 ]}>
                     <View style={[styles.flex, styles.recommendationHeader]}>
-                        <Image style={[ styles.flex,styles.recommendedImage ]} source={{ uri: item.preview }} />
+                        <Image style={[ styles.flex,styles.recommendedImage ]} source={{ uri: item.media_image_src }} />
                         <View style={[styles.flex, styles.row, styles.recommendationOptions]}>
 
                         </View>
                     </View>
                     
                     <View style={[styles.flex, styles.column, styles.shadow, {justifyContent: 'space-evenly',  paddingTop:18 }]}>
-                        <Text>{item.title}</Text>
+                        <Text>{item.title.rendered}</Text>
 
                     </View>
                 </View>
