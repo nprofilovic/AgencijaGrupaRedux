@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, FlatList, ImageBackground,Dimensions,ScrollView, Image, TouchableOpacity, Animated, } from 'react-native'
+import { Text, View, FlatList, ImageBackground,Dimensions,ScrollView, Image, TouchableOpacity, ActivityIndicator, } from 'react-native'
 import { datas } from '../data';
 import Header from '../components/Header';
 import { styles } from '../style';
@@ -192,7 +192,11 @@ export class Home extends Component {
     renderNewses = (item, index) => {
         const { news } = this.state;
         const isLastItem = index === news.length - 1;
+        
+        
         return (
+            
+            
             <TouchableOpacity onPress={() => this.props.navigation.navigate('News', {news: item})}>
                 <View style={[
                     styles.column, styles.recommendation, styles.shadow, 
@@ -221,7 +225,7 @@ export class Home extends Component {
         return (
             <ScrollView style={[styles.article, styles.flex]}>
                 {this.renderArticles()}
-                {this.renderRecommended()}
+                {this.state.loading ? <ActivityIndicator size="large" color="#000000" style = {[styles.flex,{paddingTop:110}]} /> : this.renderRecommended()}
                 {this.renderNews()}
             </ScrollView>
             
