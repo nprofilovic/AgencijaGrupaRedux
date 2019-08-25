@@ -17,11 +17,13 @@ export class Home extends Component {
 
     state = {
         datas: [],
-        portfolio: []
+        portfolio: [],
+        news: []
     }
     componentDidMount() {
         this.fetchData();
         this.fetchPortfolio();
+        this.fetchNews();
     }
     fetchData = () => {
         axios.get(`http://grupa.co.rs/wp-json/wp/v2/nectar_slider`)
@@ -33,6 +35,12 @@ export class Home extends Component {
         axios.get(`http://grupa.co.rs/wp-json/wp/v2/portfolio`)
         .then(res => {
             this.setState({portfolio: res.data});
+        })
+    }
+    fetchNews = () => {
+        axios.get(`http://grupa.co.rs/wp-json/wp/v2/posts`)
+        .then(res => {
+            this.setState({news: res.data});
         })
     }
     
@@ -57,7 +65,6 @@ export class Home extends Component {
     renderArticle = (item) => {  
         return(
             
-          
                 <ImageBackground 
                     style={[ styles.flex, styles.articleStaff]}
                     imageStyle={{borderRadius: 12}}
@@ -69,7 +76,7 @@ export class Home extends Component {
                         <Text style={{color:'grey', fontSize:12, }}>{item._nectar_slider_caption}</Text>
                     </View>
                 </ImageBackground>
-              
+           
             
         )
     }
@@ -110,7 +117,7 @@ export class Home extends Component {
                     isLastItem ? { marginRight: 18 } : null,
                 ]}>
                     <View style={[styles.flex, styles.recommendationHeader]}>
-                        <Image style={[ styles.flex,styles.recommendedImage ]} source={{ uri: item.media_image_src }} />
+                        <Image style={[ styles.flex, styles.recommendedImage ]} source={{ uri: item.featured_image_src }} />
                         <View style={[styles.flex, styles.row, styles.recommendationOptions]}>
 
                         </View>
@@ -124,12 +131,67 @@ export class Home extends Component {
             </TouchableOpacity>
         );
     }
+
+    renderNews = () => {
+        return (
+            <View style={[styles.flex, styles.column, styles.recommended]}>
+                <View style={[styles.row, styles.recommendedList]}>
+                    <Text style={{fontSize: 18}}>News</Text>
+                    <Text style={{color: 'grey'}}>More</Text>
+                </View>
+                <View style={[styles.column, ]}>
+                    <FlatList 
+                        horizontal
+                        pagingEnabled
+                        scrollEnabled
+                        showsHorizontalScrollIndicator={false}
+                        scrollEventThrottle={16}
+                        snapToAlignment="center"
+                        data={this.state.news}
+                        style={[styles.shadow, {overflow: 'visible'}]}
+                        keyExtractor={(item, index) => `${item.id}`}
+                        renderItem={({ item }) => this.renderNewses(item)}
+                    />
+                </View>
+            </View>
+            
+        );
+    }
+
+    renderNewses = (item, index) => {
+        const { news } = this.state;
+        const isLastItem = index === news.length - 1;
+        return (
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('News', {news: item})}>
+                <View style={[
+                    styles.column, styles.recommendation, styles.shadow, 
+                    index === 0 ? { marginLeft: 36 } : null,
+                    isLastItem ? { marginRight: 18 } : null,
+                ]}>
+                    <View style={[styles.flex, styles.recommendationHeader]}>
+                        <Image style={[ styles.flex, styles.recommendedImage ]} source={{ uri: item.featured_image_src }} />
+                        <View style={[styles.flex, styles.row, styles.recommendationOptions]}>
+
+                        </View>
+                    </View>
+                    
+                    <View style={[styles.flex, styles.column, styles.shadow, {justifyContent: 'space-evenly',  paddingTop:18 }]}>
+                        <Text>{item.title.rendered.split('').slice(0, 20)}...</Text>
+
+                    </View>
+                </View>
+            </TouchableOpacity>
+        );
+    }
+
     render() {
+        console.log(this.state.news);
         
         return (
             <ScrollView style={[styles.article, styles.flex]}>
                 {this.renderArticles()}
                 {this.renderRecommended()}
+                {this.renderNews()}
             </ScrollView>
             
         )

@@ -33,7 +33,7 @@ export class Portfolio extends Component {
         return (
             
                  
-            <View style={stylesArtical.flex}>
+            <ScrollView style={stylesArtical.flex}>
                 <View style={stylesArtical.flex}>
                     <ScrollView
                         horizontal
@@ -47,7 +47,7 @@ export class Portfolio extends Component {
                     >
                          
                          <Image
-                                source={{ uri: portfolio.media_image_src }}
+                                source={{ uri: portfolio.featured_image_src }}
                                 resizeMode='cover'
                                 style={{ width, height: width }}
                                 />
@@ -56,12 +56,14 @@ export class Portfolio extends Component {
                 <View style={[stylesArtical.flex, stylesArtical.content]}>
                     <View style={[stylesArtical.flex, stylesArtical.contentHeader]}>
                         <Text style={stylesArtical.title}>{portfolio.title.rendered}</Text>
-            
-                        <HTML html={portfolio._nectar_portfolio_extra_content} imagesMaxWidth={Dimensions.get('window').width} />
+                        <View style={[stylesArtical.flex, stylesArtical.row]}>
+                            <HTML html={portfolio.content.rendered} imagesInitialDimensions={{width: 300, height: 100}} imagesMaxWidth={Dimensions.get('window').width} />
+                        </View>
+                        
                    
                     </View>
                 </View>
-            </View>
+            </ScrollView>
             
         )
     }

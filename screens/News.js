@@ -4,10 +4,11 @@ import { stylesArtical } from '../style';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ScrollView } from 'react-native-gesture-handler';
+import HTML from 'react-native-render-html';
 
 const { width, height } = Dimensions.get('window');
 
-export class Article extends Component {
+export class News extends Component {
     scrollX = new Animated.Value(0);
     static navigationOptions = ({ navigation }) => {
         return {
@@ -26,11 +27,13 @@ export class Article extends Component {
     }
     render() {
         const { navigation } = this.props;
-        const article = navigation.getParam('article');
-        console.log(article);
+        const news = navigation.getParam('news');
+        
         
         return (
-            <View style={stylesArtical.flex}>
+            
+                 
+            <ScrollView style={stylesArtical.flex}>
                 <View style={stylesArtical.flex}>
                     <ScrollView
                         horizontal
@@ -43,30 +46,25 @@ export class Article extends Component {
                         onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.scrollX } } }])}
                     >
                          
-                                <Image
-                                source={{ uri: article._nectar_slider_image }}
+                         <Image
+                                source={{ uri: news.featured_image_src }}
                                 resizeMode='cover'
                                 style={{ width, height: width }}
                                 />
-                       
-
                     </ScrollView>
                 </View>
                 <View style={[stylesArtical.flex, stylesArtical.content]}>
                     <View style={[stylesArtical.flex, stylesArtical.contentHeader]}>
-                        <Text style={stylesArtical.title}>{article._nectar_slider_heading}</Text>
+                        <Text style={stylesArtical.title}>{news.title.rendered}</Text>
             
-                        <Text style={stylesArtical.description}>
-                            {article._nectar_slider_caption.split('').slice(0, 180)}...
-                            
-                            <Text style={{color: '#007BFA'}}> Read more</Text>
-                        </Text>
-                   
+                        <HTML html={news.content.rendered} imagesMaxWidth={Dimensions.get('window').width} />
+                        
                     </View>
                 </View>
-            </View>
+            </ScrollView>
+            
         )
     }
 }
 
-export default Article
+export default News

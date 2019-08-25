@@ -67,7 +67,7 @@ export const styles = create({
             // position: 'relative'
         },
         android: {
-
+            
             width: width - (30 * 2),
             marginHorizontal: 26,
             padding: 36,
