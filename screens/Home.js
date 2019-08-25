@@ -16,6 +16,9 @@ export class Home extends Component {
     }
 
     state = {
+        loading: false,
+        page: 1,
+        refreshing: false,
         datas: [],
         portfolio: [],
         news: []
@@ -32,10 +35,25 @@ export class Home extends Component {
         })
     }
     fetchPortfolio = () => {
-        axios.get(`http://grupa.co.rs/wp-json/wp/v2/portfolio`)
-        .then(res => {
-            this.setState({portfolio: res.data});
+        const { page } = this.state;
+        const url = `http://grupa.co.rs/wp-json/wp/v2/portfolio?page=${page}&results=10`
+        this.setState({ loading: true });
+        fetch(url)
+        .then(res => { 
+            return res.json()
         })
+        .then(res => {
+            const arrayData = [...this.state.portfolio, ...res]
+            this.setState({
+            portfolio: page === 1 ? res : arrayData,
+            loading: false,
+            refreshing: false
+            });
+        })
+        .catch(error => {
+            console.log(error);
+            this.setState({ loading: false });
+        });
     }
     fetchNews = () => {
         axios.get(`http://grupa.co.rs/wp-json/wp/v2/posts`)
@@ -80,11 +98,22 @@ export class Home extends Component {
             
         )
     }
+    handleRefresh = () => {
+        this.setState({
+            page:1,
+            refreshing: true
+        }, () => this.fetchPortfolio())
+    }
+    handleLoadMore = () => {
+        this.setState({
+            page: this.state.page + 1,
+        }, () => this.fetchPortfolio())
+    }
     renderRecommended = () => {
         return (
             <View style={[styles.flex, styles.column, styles.recommended]}>
                 <View style={[styles.row, styles.recommendedList]}>
-                    <Text style={{fontSize: 18}}>Recommended</Text>
+                    <Text style={{fontSize: 18}}>Web</Text>
                     <Text style={{color: 'grey'}}>More</Text>
                 </View>
                 <View style={[styles.column, ]}>
@@ -99,6 +128,8 @@ export class Home extends Component {
                         style={[styles.shadow, {overflow: 'visible'}]}
                         keyExtractor={(item, index) => `${item.id}`}
                         renderItem={({ item }) => this.renderRecommendation(item)}
+                        onEndReached={this.handleLoadMore}
+                        onEndReachedThreshold={10}
                     />
                 </View>
             </View>
@@ -124,7 +155,7 @@ export class Home extends Component {
                     </View>
                     
                     <View style={[styles.flex, styles.column, styles.shadow, {justifyContent: 'space-evenly',  paddingTop:18 }]}>
-                        <Text>{item.title.rendered}</Text>
+                        <Text>{item.title.rendered.split('').slice(0, 20)}...</Text>
 
                     </View>
                 </View>
@@ -185,7 +216,7 @@ export class Home extends Component {
     }
 
     render() {
-        console.log(this.state.news);
+        console.log(this.state.portfolio);
         
         return (
             <ScrollView style={[styles.article, styles.flex]}>
