@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import { Text, View, FlatList, ImageBackground,Dimensions,ScrollView, Image, TouchableOpacity, ActivityIndicator, } from 'react-native'
+import { FlatList, ImageBackground,Dimensions,ScrollView, TouchableOpacity, ActivityIndicator, } from 'react-native'
+import {Constants, Colors, View, Card, Button, Text, Image} from 'react-native-ui-lib'; 
 import { datas } from '../data';
 import Header from '../components/Header';
+import Banner from '../components/Banner';
 import { styles } from '../style';
 import axios from 'axios';
 
@@ -27,34 +29,79 @@ export class Home extends Component {
         this.fetchData();
         this.fetchPortfolio();
         this.fetchNews();
+        
+        
+      
     }
-    fetchData = () => {
-        axios.get(`http://grupa.co.rs/wp-json/wp/v2/nectar_slider`)
-        .then(res => {
-            this.setState({datas: res.data});        
-        })
+
+    componentWillUnmount() {
+        clearInterval(this._interval)
     }
-    fetchPortfolio = () => {
+
+    progressLoading = () => {
+        this._interval = setInterval(
+            () => {
+                if (this.state.progressValue >= 1) {
+                    return this.setState({ progressValue: 0 })
+                }
+                this.setState({
+                    progressValue: this.state.progressValue + 0.01,
+                })
+            },
+            80
+        )
+    }
+    fetchData = async () => {
         const { page } = this.state;
-        const url = `http://grupa.co.rs/wp-json/wp/v2/portfolio?page=${page}&results=10`
+        console.log("All Good");
+        
+        const url = `http://grupa.co.rs/wp-json/wp/v2/nectar_slider?page=${page}&per_page=4`;
+ 
         this.setState({ loading: true });
-        fetch(url)
+        await fetch(url)
         .then(res => { 
             return res.json()
         })
         .then(res => {
-            const arrayData = [...this.state.portfolio, ...res]
+            const arrayData = [...this.state.datas, ...res]
             this.setState({
+            datas: page === 1 ? res : arrayData,
+            loading: false,
+            refreshing: false
+        });
+      })
+      .catch(error => {
+        console.log(error);
+        this.setState({ loading: false });
+      });
+        
+    }
+
+    fetchPortfolio = () => {
+        const { page } = this.state;
+        const url = `http://grupa.co.rs/wp-json/wp/v2/portfolio?page=${page}&per_page=5&project-type=18`
+        this.setState({ loading: true });
+        fetch(url)
+        .then(res => { 
+          return res.json()
+          
+        })
+        .then(res => {
+          const arrayData = [...this.state.portfolio, ...res]
+          this.setState({
             portfolio: page === 1 ? res : arrayData,
             loading: false,
             refreshing: false
-            });
+          });
+          console.log("Portfolio Posts");
         })
         .catch(error => {
-            console.log(error);
-            this.setState({ loading: false });
+          console.log(error);
+          this.setState({ loading: false });
         });
     }
+
+   
     fetchNews = () => {
         axios.get(`http://grupa.co.rs/wp-json/wp/v2/posts`)
         .then(res => {
@@ -67,15 +114,16 @@ export class Home extends Component {
             <View style={[styles.flex, styles.column, styles.articleStaffs]}>
                 <FlatList 
                     horizontal
-                    pagingEnabled
                     scrollEnabled
                     showsHorizontalScrollIndicator={false}
                     scrollEventThrottle={16}
                     snapToAlignment="center"
                     data={this.state.datas}
                     style={styles.flatlist}
-                    keyExtractor={(item, index) => `${item.id}`}
+                    keyExtractor={(item, index) => `${item.id}` }
                     renderItem={({ item }) => this.renderArticle(item)}
+                    
+                    
                 />
             </View>
         );
@@ -98,25 +146,17 @@ export class Home extends Component {
             
         )
     }
-    handleRefresh = () => {
-        this.setState({
-            page:1,
-            refreshing: true
-        }, () => this.fetchPortfolio())
-    }
-    handleLoadMore = () => {
-        this.setState({
-            page: this.state.page + 1,
-        }, () => this.fetchPortfolio())
-    }
     renderRecommended = () => {
         return (
             <View style={[styles.flex, styles.column, styles.recommended]}>
                 <View style={[styles.row, styles.recommendedList]}>
-                    <Text style={{fontSize: 18}}>Web</Text>
-                    <Text style={{color: 'grey'}}>More</Text>
+                    <Text style={{fontSize: 18}}>Brendiranje</Text>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('WebSites')}>
+                        <Text style={{color: 'grey'}}>More</Text>
+                    </TouchableOpacity>
+                    
                 </View>
-                <View style={[styles.column, ]}>
+                <View style={[styles.column ]}>
                     <FlatList 
                         horizontal
                         pagingEnabled
@@ -126,10 +166,9 @@ export class Home extends Component {
                         snapToAlignment="center"
                         data={this.state.portfolio}
                         style={[styles.shadow, {overflow: 'visible'}]}
-                        keyExtractor={(item, index) => `${item.id}`}
+                        keyExtractor={(item, index) => `${item.id}` }
                         renderItem={({ item }) => this.renderRecommendation(item)}
-                        onEndReached={this.handleLoadMore}
-                        onEndReachedThreshold={10}
+                        
                     />
                 </View>
             </View>
@@ -220,12 +259,13 @@ export class Home extends Component {
     }
 
     render() {
-        console.log(this.state.portfolio);
+        console.log(this.state.datas);
         
         return (
             <ScrollView style={[styles.article, styles.flex]}>
                 {this.renderArticles()}
-                {this.state.loading ? <ActivityIndicator size="large" color="#000000" style = {[styles.flex,{paddingTop:110}]} /> : this.renderRecommended()}
+                {this.state.loading ? <ActivityIndicator  color="#000000" style = {[styles.flex,styles.row, {paddingTop:110, margin:35}]} /> : this.renderRecommended()}
+                <Banner />
                 {this.renderNews()}
             </ScrollView>
             
