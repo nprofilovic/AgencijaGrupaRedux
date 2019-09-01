@@ -70,10 +70,10 @@ export const styles = create({
             
             width: width - (30 * 2),
             marginHorizontal: 26,
-            padding: 36,
+            padding: 156,
             borderRadius: 15,
             overflow: 'visible',
-            // backgroundColor: 'pink',
+            
             
         }
         
@@ -85,7 +85,7 @@ export const styles = create({
         },
         android: {
             overflow:'visible', 
-            height: 300
+            height: 330
         }
     },
     articleInfo: {
@@ -103,11 +103,13 @@ export const styles = create({
             position: 'absolute',
             paddingHorizontal: 36,
             paddingVertical:24,
-            bottom: -36,
+            bottom: -20,
             right: 36,
             left: 36,
             borderRadius: 12,
             backgroundColor:'white',
+            
+            
             
         }
         
@@ -123,7 +125,7 @@ export const styles = create({
             shadowRadius:4
         },
         android: {
-            elevation: 4
+            elevation: 8
         }
     },
     recommended: {
@@ -132,7 +134,7 @@ export const styles = create({
         },
         android: {
             padding:36,
-            //marginTop:-170
+            marginTop:10
         }
     },
     recomendation: {

@@ -9,6 +9,8 @@ import axios from 'axios';
 
 const { width, height } = Dimensions.get('screen');
 
+
+
 export class Home extends Component {
     
     static navigationOptions = {
@@ -130,18 +132,19 @@ export class Home extends Component {
     }
     renderArticle = (item) => {  
         return(
-            
-                <ImageBackground 
-                    style={[ styles.flex, styles.articleStaff]}
-                    imageStyle={{borderRadius: 12}}
-                    source={{ uri: item._nectar_slider_image }} 
+    
+                    <ImageBackground 
+                        style={[ styles.flex, styles.articleStaff]}
+                        imageStyle={{borderRadius: 12}}
+                        source={{ uri: item._nectar_slider_image }} 
                     >
-                    
-                    <View style={[styles.column, styles.articleInfo, styles.shadow]}>
+                    <View style={[styles.column, styles.articleInfo, styles.shadow, ]}>
                         <Text style={{fontWeight: '500', fontSize: 18, paddingBottom: 8}}>{item._nectar_slider_heading}</Text>
                         <Text style={{color:'grey', fontSize:12, }}>{item._nectar_slider_caption}</Text>
                     </View>
                 </ImageBackground>
+                
+                
            
             
         )
@@ -184,7 +187,7 @@ export class Home extends Component {
                 <View style={[
                     styles.column, styles.recommendation, styles.shadow, 
                     index === 0 ? { marginLeft: 36 } : null,
-                    isLastItem ? { marginRight: 18 } : null,
+                    isLastItem ? { marginRight: 36 } : null,
                 ]}>
                     <View style={[styles.flex, styles.recommendationHeader]}>
                         <Image style={[ styles.flex, styles.recommendedImage ]} source={{ uri: item.featured_image_src }} />
@@ -264,9 +267,15 @@ export class Home extends Component {
         return (
             <ScrollView style={[styles.article, styles.flex]}>
                 {this.renderArticles()}
-                {this.state.loading ? <ActivityIndicator  color="#000000" style = {[styles.flex,styles.row, {paddingTop:110, margin:35}]} /> : this.renderRecommended()}
-                <Banner />
+                {this.state.loading ? <ActivityIndicator size={'large'} color="#000000" style = {[styles.flex,styles.row, {paddingTop:110, margin:35}]} /> : this.renderRecommended()}
+                <Banner 
+                    image={'http://grupa.co.rs/wp-content/uploads/2019/08/social_networks.png'}
+                    headerText={'Želite da se oglašavate na internetu?'}
+                    bodyText={'Tu smo da vam pomognemo!'}
+                    height={200}
+                />
                 {this.renderNews()}
+                
             </ScrollView>
             
         )
