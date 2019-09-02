@@ -4,6 +4,7 @@ import {Constants, Colors, View, Card, Button, Text, Image} from 'react-native-u
 import { datas } from '../data';
 import Header from '../components/Header';
 import Banner from '../components/Banner';
+import FotoBanner from '../components/FotoBanner';
 import { styles } from '../style';
 import axios from 'axios';
 
@@ -36,23 +37,7 @@ export class Home extends Component {
       
     }
 
-    componentWillUnmount() {
-        clearInterval(this._interval)
-    }
-
-    progressLoading = () => {
-        this._interval = setInterval(
-            () => {
-                if (this.state.progressValue >= 1) {
-                    return this.setState({ progressValue: 0 })
-                }
-                this.setState({
-                    progressValue: this.state.progressValue + 0.01,
-                })
-            },
-            80
-        )
-    }
+   
     fetchData = async () => {
         const { page } = this.state;
         console.log("All Good");
@@ -267,6 +252,10 @@ export class Home extends Component {
         return (
             <ScrollView style={[styles.article, styles.flex]}>
                 {this.renderArticles()}
+                <View style={styles.fotobanner}>
+                    <FotoBanner />
+                </View>
+                
                 {this.state.loading ? <ActivityIndicator size={'large'} color="#000000" style = {[styles.flex,styles.row, {paddingTop:110, margin:35}]} /> : this.renderRecommended()}
                 <Banner 
                     image={'http://grupa.co.rs/wp-content/uploads/2019/08/social_networks.png'}

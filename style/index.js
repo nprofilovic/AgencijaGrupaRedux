@@ -103,7 +103,7 @@ export const styles = create({
             position: 'absolute',
             paddingHorizontal: 36,
             paddingVertical:24,
-            bottom: -20,
+            bottom: 5,
             right: 36,
             left: 36,
             borderRadius: 12,
@@ -222,6 +222,14 @@ export const styles = create({
         }
         
     },
+    fotobanner: {
+        ios:{
+            marginTop:40
+        },
+        android:{
+            marginTop:20
+        }
+    }
     
 })
 
