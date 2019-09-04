@@ -141,8 +141,8 @@ export class Home extends Component {
         return (
             <View style={[styles.flex, styles.column, styles.recommended]}>
                 <View style={[styles.row, styles.recommendedList]}>
-                    <Text style={{fontSize: 18}}>Brendiranje</Text>
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate('WebSites',{websites: this.state.portfolio})}>
+                    <Text style={{fontSize: 18}}>Web sajtovi</Text>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('WebSites',{websites: this.state.portfolio, fetchData: this.fetchPortfolio()})}>
                         <Text style={{color: 'grey'}}>More</Text>
                     </TouchableOpacity>
                     
@@ -197,7 +197,7 @@ export class Home extends Component {
         return (
             <View style={[styles.flex, styles.column, styles.recommended]}>
                 <View style={[styles.row, styles.recommendedList]}>
-                    <Text style={{fontSize: 18}}>News</Text>
+                    <Text style={{fontSize: 18}}>Vesti</Text>
                     <Text style={{color: 'grey'}}>More</Text>
                 </View>
                 <View style={[styles.column, ]}>
