@@ -46,18 +46,18 @@ export class Portfolio extends Component {
                         onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.scrollX } } }])}
                     >
                          
-                         <Image
-                                source={{ uri: portfolio.featured_image_src }}
-                                resizeMode='cover'
-                                style={{ width, height: width }}
-                                />
+                        <Image
+                            source={{ uri: portfolio.featured_image_src }}
+                            resizeMode='cover'
+                            style={{ width, height: width }}
+                        />
                     </ScrollView>
                 </View>
                 <View style={[stylesArtical.flex, stylesArtical.content]}>
                     <View style={[stylesArtical.flex, stylesArtical.contentHeader]}>
                         <Text style={stylesArtical.title}>{portfolio.title.rendered}</Text>
                         <View style={[stylesArtical.flex, stylesArtical.row]}>
-                            <HTML html={portfolio.content.rendered} imagesInitialDimensions={{width: 300, height: 100}} imagesMaxWidth={Dimensions.get('window').width} />
+                            <HTML html={portfolio.content.rendered} imagesInitialDimensions={{width: width - 30, height: 200}} style={{marginTop:20, marginLeft:-20}} imagesMaxWidth={Dimensions.get('window').width} />
                         </View>
                         
                    

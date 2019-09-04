@@ -66,7 +66,7 @@ export class Home extends Component {
 
     fetchPortfolio = () => {
         const { page } = this.state;
-        const url = `http://grupa.co.rs/wp-json/wp/v2/portfolio?page=${page}&per_page=5&project-type=18`
+        const url = `http://grupa.co.rs/wp-json/wp/v2/portfolio?page=${page}&per_page=5&project-type=20`
         this.setState({ loading: true });
         fetch(url)
         .then(res => { 
@@ -118,7 +118,7 @@ export class Home extends Component {
     renderArticle = (item) => {  
         return(
     
-                    <ImageBackground 
+                <ImageBackground 
                         style={[ styles.flex, styles.articleStaff]}
                         imageStyle={{borderRadius: 12}}
                         source={{ uri: item._nectar_slider_image }} 
@@ -134,12 +134,15 @@ export class Home extends Component {
             
         )
     }
+
+    
+
     renderRecommended = () => {
         return (
             <View style={[styles.flex, styles.column, styles.recommended]}>
                 <View style={[styles.row, styles.recommendedList]}>
                     <Text style={{fontSize: 18}}>Brendiranje</Text>
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate('WebSites')}>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('WebSites',{websites: this.state.portfolio})}>
                         <Text style={{color: 'grey'}}>More</Text>
                     </TouchableOpacity>
                     
@@ -247,11 +250,11 @@ export class Home extends Component {
     }
 
     render() {
-        console.log(this.state.datas);
+       
         
         return (
             <ScrollView style={[styles.article, styles.flex]}>
-                {this.renderArticles()}
+                {this.state.loading ? <ActivityIndicator size={'large'} color="#000000" /> : this.renderArticles()}
                 <View style={styles.fotobanner}>
                     <FotoBanner />
                 </View>
