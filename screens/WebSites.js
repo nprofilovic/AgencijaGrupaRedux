@@ -26,15 +26,15 @@ export class WebSites extends Component {
     fetchPortfolio = async () => {
         this.setState({ loading: true});
         const { page, portfolio } = this.state;
-        const url = `http://grupa.co.rs/wp-json/wp/v2/portfolio?page=${page}&per_page=7&project-type=20`
+        const url = `http://grupa.co.rs/wp-json/wp/v2/portfolio?page=${page}&per_page=2&project-type=18`
         await fetch(url)
         .then(res => res.json())
         .then(res => {
-          this.setState(state => ({
-            portfolio: state.page === 1 ? res : [...state.portfolio, ...res],
+          this.setState({
+            portfolio: this.state.page === 1 ? res : [...this.state.portfolio, ...res],
             refreshing: false,
             loading: false
-          }));
+          });
         
         })
         .catch(error => {
@@ -58,7 +58,7 @@ export class WebSites extends Component {
       };
 
       handleLoadMore = () => {
-        this.setState(state => ({ page: state.page + 1}), () => this.fetchPortfolio())
+        this.setState({ page: this.state.page + 1}, () => this.fetchPortfolio())
       }
 
     renderWebsites = (item, index) => {
@@ -81,6 +81,8 @@ export class WebSites extends Component {
                         </View>
                         <Text text70 color={Colors.dark10}></Text>
                     </View>
+                    
+
                 </Card>
             
             
@@ -88,12 +90,19 @@ export class WebSites extends Component {
     }
     
     renderFooter = () => {
-        
         return(
-            this.state.loading ? 
             <View style={{paddingVertical:20, borderTopWidth: 1, borderTopColor: "#CED0CE"}}>
-                <ActivityIndicator animating size="large" />
-            </View> : null
+                <Button
+                        backgroundColor='#FB3C62'
+                        label='Get More'
+                        borderRadius={7}
+                        style={{height: 45, }}
+                        onPress={() => this.handleLoadMore()}
+                >
+                    { this.state.loading ? ( <ActivityIndicator animating size="large"  /> ): null }
+                </Button>
+                
+            </View> 
         )
     }
     render() {
@@ -115,16 +124,15 @@ export class WebSites extends Component {
                 <View style={[styles.column ]}>
                     <FlatList 
                         data={this.state.portfolio}
-                        style={[styles.shadow, {overflow: 'visible'}]}
+                        style={[styles.shadow,]}
                         keyExtractor={(item, index) => `${item.id}` }
                         renderItem={({ item }) => this.renderWebsites(item)}
                         ListFooterComponent={() => this.renderFooter()}
-                        refreshing={this.state.refreshing}
-                        onRefresh={this.handleRefresh}
-                        onEndReached={() => this.handleLoadMore()}
-                        onEndReachedThreshold={0}
+                        
+                        
                         
                     />
+                    
                 </View>
             }
             </ScrollView>
