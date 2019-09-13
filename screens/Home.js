@@ -6,13 +6,15 @@ import Header from '../components/Header';
 import Banner from '../components/Banner';
 import FotoBanner from '../components/FotoBanner';
 import { styles } from '../style';
+import { fetchSlider } from '../redux/actions/sliderActions';
+import { connect } from 'react-redux';
 import axios from 'axios';
 
 const { width, height } = Dimensions.get('screen');
 
 
 
-export class Home extends Component {
+class Home extends Component {
     
     static navigationOptions = {
         header: (
@@ -29,7 +31,7 @@ export class Home extends Component {
         news: []
     }
     componentDidMount() {
-        this.fetchData();
+        this.props.fetchSlider();
         this.fetchPortfolio();
         this.fetchNews();
         
@@ -38,31 +40,7 @@ export class Home extends Component {
     }
 
    
-    fetchData = async () => {
-        const { page } = this.state;
-        console.log("All Good");
-        
-        const url = `http://grupa.co.rs/wp-json/wp/v2/nectar_slider?page=${page}&per_page=4`;
- 
-        this.setState({ loading: true });
-        await fetch(url)
-        .then(res => { 
-            return res.json()
-        })
-        .then(res => {
-            const arrayData = [...this.state.datas, ...res]
-            this.setState({
-            datas: page === 1 ? res : arrayData,
-            loading: false,
-            refreshing: false
-        });
-      })
-      .catch(error => {
-        console.log(error);
-        this.setState({ loading: false });
-      });
-        
-    }
+    
 
     fetchPortfolio = () => {
         const { page } = this.state;
@@ -97,6 +75,8 @@ export class Home extends Component {
     }
     
     renderArticles = () => {
+        
+        
         return (
             <View style={[styles.flex, styles.column, styles.articleStaffs]}>
                 <FlatList 
@@ -105,7 +85,7 @@ export class Home extends Component {
                     showsHorizontalScrollIndicator={false}
                     scrollEventThrottle={16}
                     snapToAlignment="center"
-                    data={this.state.datas}
+                    data={this.props.slider.sliders.sliderData}
                     style={styles.flatlist}
                     keyExtractor={(item, index) => `${item.id}` }
                     renderItem={({ item }) => this.renderArticle(item)}
@@ -223,7 +203,6 @@ export class Home extends Component {
         const { news } = this.state;
         const isLastItem = index === news.length - 1;
         
-        
         return (
             
             
@@ -274,7 +253,10 @@ export class Home extends Component {
     }
 } 
 
-Home.defaultProps = {
-    articles: datas
+const mapStateToProps = (state) => {    
+    return {
+        slider: state
+    }
 }
-export default Home
+
+export default connect(mapStateToProps, {fetchSlider})(Home)
