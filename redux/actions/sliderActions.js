@@ -23,6 +23,6 @@ export const fetchSlider = () => {
             dispatch(fetchSliderSuccess(json));
         } catch(error) {
             dispatch(fetchSliderError(error));
-        }
+        } 
     }
 }
