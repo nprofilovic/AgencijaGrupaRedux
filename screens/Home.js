@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import { FlatList, ImageBackground,Dimensions,ScrollView, TouchableOpacity, ActivityIndicator, } from 'react-native'
 import {Constants, Colors, View, Card, Button, Text, Image} from 'react-native-ui-lib'; 
-import { datas } from '../data';
 import Header from '../components/Header';
 import Banner from '../components/Banner';
 import FotoBanner from '../components/FotoBanner';
 import { styles } from '../style';
 import { fetchSlider } from '../redux/actions/sliderActions';
+import { fetchWebsite } from '../redux/actions/websiteAction';
 import { connect } from 'react-redux';
 import axios from 'axios';
 
@@ -26,46 +26,17 @@ class Home extends Component {
         loading: false,
         page: 1,
         refreshing: false,
-        datas: [],
-        portfolio: [],
+        
         news: []
     }
     componentDidMount() {
         this.props.fetchSlider();
-        this.fetchPortfolio();
+        this.props.fetchWebsite();
         this.fetchNews();
         
         
       
     }
-
-   
-    
-
-    fetchPortfolio = () => {
-        const { page } = this.state;
-        const url = `http://grupa.co.rs/wp-json/wp/v2/portfolio?page=${page}&per_page=5&project-type=20`
-        this.setState({ loading: true });
-        fetch(url)
-        .then(res => { 
-          return res.json()
-          
-        })
-        .then(res => {
-          const arrayData = [...this.state.portfolio, ...res]
-          this.setState({
-            portfolio: page === 1 ? res : arrayData,
-            loading: false,
-            refreshing: false
-          });
-          console.log("Portfolio Posts");
-        })
-        .catch(error => {
-          console.log(error);
-          this.setState({ loading: false });
-        });
-    }
-
    
     fetchNews = () => {
         axios.get(`http://grupa.co.rs/wp-json/wp/v2/posts`)
@@ -118,11 +89,12 @@ class Home extends Component {
     
 
     renderRecommended = () => {
+        
         return (
             <View style={[styles.flex, styles.column, styles.recommended]}>
                 <View style={[styles.row, styles.recommendedList]}>
                     <Text style={{fontSize: 18}}>Web sajtovi</Text>
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate('WebSites',{websites: this.state.portfolio, fetchData: this.fetchPortfolio()})}>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('WebSites',{websites: this.props.websites.website.websiteData, fetchData: this.props.fetchWebsite()})}>
                         <Text style={{color: 'grey'}}>More</Text>
                     </TouchableOpacity>
                     
@@ -135,7 +107,7 @@ class Home extends Component {
                         showsHorizontalScrollIndicator={false}
                         scrollEventThrottle={16}
                         snapToAlignment="center"
-                        data={this.state.portfolio}
+                        data={this.props.websites.website.websiteData}
                         style={[styles.shadow, {overflow: 'visible'}]}
                         keyExtractor={(item, index) => `${item.id}` }
                         renderItem={({ item }) => this.renderRecommendation(item)}
@@ -148,14 +120,13 @@ class Home extends Component {
     }
 
     renderRecommendation = (item, index) => {
-        const { portfolio } = this.state;
-        const isLastItem = index === portfolio.length - 1;
+       
+               
         return (
             <TouchableOpacity onPress={() => this.props.navigation.navigate('Portfolio', {portfolio: item})}>
                 <View style={[
                     styles.column, styles.recommendation, styles.shadow, 
-                    index === 0 ? { marginLeft: 36 } : null,
-                    isLastItem ? { marginRight: 36 } : null,
+                    
                 ]}>
                     <View style={[styles.flex, styles.recommendationHeader]}>
                         <Image style={[ styles.flex, styles.recommendedImage ]} source={{ uri: item.featured_image_src }} />
@@ -254,9 +225,11 @@ class Home extends Component {
 } 
 
 const mapStateToProps = (state) => {    
+       
     return {
-        slider: state
+        slider: state,
+        websites: state
     }
 }
 
-export default connect(mapStateToProps, {fetchSlider})(Home)
+export default connect(mapStateToProps, {fetchSlider, fetchWebsite})(Home)

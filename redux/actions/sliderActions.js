@@ -18,7 +18,7 @@ export const fetchSlider = () => {
     return async dispatch => {
         dispatch(fetchSliderRequest());
         try {
-            let response = await fetch('http://grupa.co.rs/wp-json/wp/v2/nectar_slider');
+            let response = await fetch('http://grupa.co.rs/wp-json/wp/v2/nectar_slider?per_page=4');
             let json = await response.json();
             dispatch(fetchSliderSuccess(json));
         } catch(error) {
